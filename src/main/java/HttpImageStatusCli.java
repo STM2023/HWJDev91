@@ -1,49 +1,40 @@
 import java.io.File;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class HttpImageStatusCli {
-    private static final Scanner scanner = new Scanner(System.in);
-    private static  int input() throws InputMismatchException {
-            int input=0;
-
-            try {
-                 input = scanner.nextInt();
-            } catch (InputMismatchException e) {
-                e.printStackTrace();
-            }
-
-            if (input > 0 && input < 100000) {
-                    return  input;
+    private static final  Scanner scanner = new Scanner(System.in);
+    private static  int input()  {
+        int   input= 0;
+            if (scanner.hasNextInt()) {
+                input = scanner.nextInt();
             } else {
                 System.out.println("Invalid input. Please enter valid number");
             }
 
-            return  input;
+            scanner.close();
+            return input;
     }
 
-   public static void askStatus()   throws IllegalArgumentException{
+   public static void askStatus()   {
        int inputcode =0;
-       System.out.println("Enter HTTP status code");
-       try {   inputcode =input();
-       } catch (Exception e) {
-           e.printStackTrace();
-       }
 
-       File file = new File("web/404.jpg");
+           System.out.println("Enter HTTP status code");
+           inputcode = input();
+
+       String filepath ="web/"+inputcode+".jpg";
+       File file = new File(filepath);
        if (file.exists()) {
            file.delete();
        }
          try {
-           HttpStatusImageDownloader.downloadStatusImage(inputcode);
-         } catch (Exception e) {
-           e.printStackTrace();
+             HttpStatusImageDownloader.downloadStatusImage(inputcode);
+         }  catch(Exception e){
+                 System.out.println(e.getMessage());
          }
-           String filepath ="web/"+inputcode+".jpg";
+
            file = new File(filepath);
            if (!file.exists()) {
                  System.out.println("There is not image for HTTP status "+inputcode);
            }
-
     }
 }
